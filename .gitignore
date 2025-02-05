@@ -17,7 +17,7 @@ db.sqlite3
 media/
 staticfiles/
 Ecommerce_platform/settings.py  # Add settings.py in Ecommerce_platform folder to .gitignore
-
+store/migrations/  # Add migrations folder in store app to .gitignore
 # Environment variables
 .env
 
