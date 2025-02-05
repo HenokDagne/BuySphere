@@ -1,10 +1,21 @@
 from rest_framework import viewsets, mixins, generics
+from rest_framework.views import APIView 
 from django.shortcuts import render
 from .models import Category, Product, ProductVariation, Cart, CartItem
 from .serializers import CategorySerializer, ProductSerializer, ProductVariationSerializer, CartSerializer, CartItemSerializer
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-def home(request):
-    return render(request, 'index.html')
+class HomeAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        products = Product.objects.all()
+        categories = Category.objects.all()
+        product_serializer = ProductSerializer(products, many=True, context={'request': request})
+        category_serializer = CategorySerializer(categories, many=True, context={'request': request})
+        return render(request, 'index.html' , {
+            'products': product_serializer.data, 
+            'categories': category_serializer.data
+        })
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -12,13 +23,14 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class ProductList(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    
+
 class ProductListRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
 class ProductVariationListView(generics.ListAPIView):
     queryset = ProductVariation.objects.all()
-    serializer_class = ProductVariationSerializer   
+    serializer_class = ProductVariationSerializer
 
 class ProductVariationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProductVariation.objects.all()

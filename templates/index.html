@@ -67,9 +67,9 @@
                         <li>
                              <select class="categories">
                                 <option value="cat">category</option>
-                                <option value="phone"><a href="">phone</a></option>
-                                <option value="laptops"><a href="">shoes</a></option>
-                                <option value="shoes"><a href="">laptop</a></option>
+                                {% for category in categories %}
+                                <option value="phone"><a href="">{{ category.name }}</a></option>
+                                {% endfor %}
                              </select>
                         </li>
                         <li>
@@ -102,15 +102,18 @@
           
         <article class="article3">
             <div class="shopping-continer">
+                {% for product in products %}
                 <div class="col">
-                    <img src="{% static 'images/iphone16 .jpg' %}" alt="product">
+                    <img src="{{ product.image_url}}" alt="product">
                     <div class="product-details">
-                        <p>product name</p>
-                        <p>product price</p>
+                        <p>{{ product.name }}</p>
+                        <p>{{product.price}}</p>
                     </div>
+                 
+
                                
                 </div>
-               
+               {% endfor %}
             </div>
         </article>
 

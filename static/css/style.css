@@ -240,45 +240,42 @@ article nav ul li select {
     justify-content: space-around; /* Equal gap between items */
     align-items: center;
 }
-
 .shopping-continer .col {
     border: none;
     height: 400px;
     width: 300px;
-    background-color:#ebedec;
+    background-color: #ebedec;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between; /* Adjust to space between items */
     text-align: center;
     margin: 10px; /* Add margin for spacing between items */
-
 }
-.shopping-continer .col:hover{
+
+.shopping-continer .col:hover {
     box-shadow: 0 0 10px rgba(45, 44, 37, 0.8); /* Add box shadow on all sides */
 }
+
 .shopping-continer .col img {
     margin-top: -10px;
     max-width: 90%;
-    height: 700px;
-    flex-grow: 1; 
-    object-fit: contain;
+    max-height: 50%;
+ /* Adjust height to fit within the container */
+    object-fit: cover;
     margin-bottom: 10px; /* Space between image and details */
 }
 
 .shopping-continer .col .product-details {
     display: flex;
-    justify-content: space-between;
-    flex-direction: row;
+    flex-direction: column; /* Change to column to stack details vertically */
     align-items: center;
-    max-height: 200px;
     width: 100%;
+    margin-top: 20px;
 }
+
 .shopping-continer .col .product-details p {
-    margin-top: -80px;
+    margin: 5px 0; /* Adjust margin for spacing */
     font-weight: bold;
     opacity: 0.8;
-    margin-left: 10px;
-    margin-right: 10px;
-    
 }

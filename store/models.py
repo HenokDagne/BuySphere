@@ -47,7 +47,7 @@ class ProductVariation(models.Model):
         return f"{self.product.name} - {self.color}s"
 
 class Cart(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, unique=True)
 
     class Meta:
         ordering = ["-created_at"]

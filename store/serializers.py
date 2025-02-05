@@ -8,18 +8,17 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
-    def update(self, instance, validated_data):
-        Category_data = validated_data.pop('category', None)
-        if Category_data:
-            CategorySerializer = self.fields['category']
-            Category_instance = instance.category
-            Category = CategorySerializer.update(Category_instance, Category_data)
+    image_url = serializers.SerializerMethodField()
 
-        return super().update(instance, validated_data)
-   
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'category', 'image', 'stock', 'price'] 
+        fields = ['id', 'name', 'description', 'category', 'image', 'image_url', 'stock', 'price']
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
 
 class ProductVariationSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
@@ -33,7 +32,7 @@ class CartSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CartItemSerializer(serializers.ModelSerializer):
-    cart = CartSerializer(read_only=True)
+    cart = CartSerializer()
     product_variation = ProductVariationSerializer()
     class Meta:
         model = CartItem
