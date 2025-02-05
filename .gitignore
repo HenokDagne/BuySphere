@@ -40,3 +40,4 @@ ENV/
 # Windows
 Thumbs.db
 ehthumbs.db
+.README.md
