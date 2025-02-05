@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand
 from store.models import Category, Product, ProductVariation
 
 # API Configuration
-API_KEY = "2d2e251925msh06e31d501a6355cp141de4jsn4c855bb37222"  # Replace with your actual API key
+API_KEY = ""  # Replace with your actual API key
 HEADERS = {
     'x-rapidapi-key': API_KEY,
     'x-rapidapi-host': "real-time-amazon-data.p.rapidapi.com"
