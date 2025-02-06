@@ -7,7 +7,6 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="{% static 'js/main.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
 </head>
 <body>
@@ -65,13 +64,15 @@
                 <nav>
                     <ul>
                         <li>
-                             <select class="categories">
-                                <option value="cat">category</option>
+                            <select class="categories" name="category" onchange="location = this.value;">
+                                <option value="">Select Category</option>
                                 {% for category in categories %}
-                                <option value="phone"><a href="">{{ category.name }}</a></option>
+                                <option value="{% url 'filter' category.id %}">{{ category.name }}</option>
                                 {% endfor %}
-                             </select>
-                        </li>
+                            </select>
+                            
+                                
+                            
                         <li>
                             <select class="color">
                                 <option value="color"><a href="">laptop</a></option>

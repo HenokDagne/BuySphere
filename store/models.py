@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=255, blank=True)
@@ -47,6 +48,7 @@ class ProductVariation(models.Model):
         return f"{self.product.name} - {self.color}s"
 
 class Cart(models.Model):
+    user = models.OneToOneField(User, related_name='cart', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, unique=True)
 
     class Meta:

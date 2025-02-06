@@ -16,9 +16,21 @@ class HomeAPIView(APIView):
             'products': product_serializer.data, 
             'categories': category_serializer.data
         })
+    
+class filterViewSet(APIView):
+    def get(self, request, pk=None, *args, **kwargs):
+        category = Category.objects.get(pk=pk)
+        product = Product.objects.filter(category_id=pk)
+        filtered_products = ProductSerializer(product, many=True, context={'request': request})
+        return Response({'category': CategorySerializer(category, context={'request': request}).data, 'products': filtered_products.data})
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+       
+    
+    
+  
 
 class ProductList(generics.ListAPIView):
     queryset = Product.objects.all()

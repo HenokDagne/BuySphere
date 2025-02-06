@@ -2,8 +2,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    HomeAPIView,
+    filterViewSet,
     CategoryViewSet,
+    HomeAPIView,
     ProductList,
     ProductListRetrieveUpdateView,
     ProductVariationListView,
@@ -21,6 +22,7 @@ router.register(r'cart-items', CartItemViewSet)
 # Define the URL patterns for the generic views
 urlpatterns = [
     path('home/', HomeAPIView.as_view(), name='home'),
+    path('filter/<int:pk>/', filterViewSet.as_view(), name='filter'),
     path('', include(router.urls)),
     path('products/', ProductList.as_view(), name='product-list'),
     path('products/<int:pk>/', ProductListRetrieveUpdateView.as_view(), name='product-retrieve-update'),
@@ -30,4 +32,3 @@ urlpatterns = [
 
 # Include the router URLs in the urlpatterns
 urlpatterns += router.urls
-
