@@ -50,9 +50,7 @@ class CreateProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    email = models.EmailField()
     phone = models.CharField(max_length=15)  
-
 class Address(models.Model):
     customer = models.ForeignKey(CreateProfile, related_name='addresses', on_delete=models.CASCADE) 
     street = models.CharField(max_length=250)
@@ -80,9 +78,13 @@ class Payment(models.Model):
 class Cart(models.Model):
     user = models.OneToOneField(CreateProfile, related_name='cart', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, unique=True)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.user.user.username} - {self.created_at}"    
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
@@ -104,9 +106,8 @@ class Order(models.Model):
     customer = models.ForeignKey(CreateProfile, related_name='orders', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     address = models.ForeignKey(Address, related_name='orders', on_delete=models.CASCADE)
-    payment = models.ForeignKey(Payment, related_name='orders', on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_status = models.CharField(max_length=20, choices=[('Pending', 'Pending'), ('Completed', 'Completed'), ('Failed', 'Failed')])
+    
 
     def __str__(self):
         return f"{self.customer.user.username} - {self.total_price} - {self.payment_status}"
