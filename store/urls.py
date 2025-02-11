@@ -2,6 +2,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
+    login_view,
     filterViewSet,
     CategoryViewSet,
     HomeAPIView,
@@ -23,6 +24,7 @@ router.register(r'cart-items', CartItemViewSet)
 
 # Define the URL patterns for the generic views
 urlpatterns = [
+    path('login/', login_view, name='login'),
     path('home/', HomeAPIView.as_view(), name='home'),
     path('filter/<int:pk>/', filterViewSet.as_view(), name='filter'),
     path('', include(router.urls)),

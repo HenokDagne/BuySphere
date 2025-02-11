@@ -40,12 +40,12 @@ class CartSerializer(serializers.ModelSerializer):
         return total
 
 class CartItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
+    productVariation = ProductVariationSerializer()
     cart = CartSerializer()
 
     class Meta:
         model = CartItem
-        fields = ['id','cart', 'product', 'quantity']
+        fields = ['id','cart', 'productVariation', 'quantity']
 
 
 

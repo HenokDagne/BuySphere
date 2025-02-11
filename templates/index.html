@@ -110,6 +110,15 @@
                         <p>{{ product.name }}</p>
                         <p>{{product.price}}</p>
                     </div>
+                   <div class="button">
+                    <form method="post" action="{% url 'create-cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name ="product_id" value="{{ product.id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <button class="submit">Add to cart</button>
+                    </form>
+                    <button class="">Buy now</button>
+                   </div> 
                  
 
                                

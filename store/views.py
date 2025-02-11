@@ -1,11 +1,29 @@
 from rest_framework import viewsets, mixins, generics
 from rest_framework.views import APIView 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Category, Product, ProductVariation, Cart, CartItem
 from .serializers import CategorySerializer, ProductSerializer, ProductVariationSerializer, CartSerializer, CartItemSerializer
 from rest_framework.decorators import action
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm # Django uses AuthenticationForm to validate the username and password.
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'login.html', {'form': form})
+
 
 class HomeAPIView(APIView):
     def get(self, request, *args, **kwargs):
@@ -49,33 +67,53 @@ class ProductVariationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAP
     queryset = ProductVariation.objects.all()
     serializer_class = ProductVariationSerializer
 
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import Cart, CartItem, ProductVariation
+
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import Cart, CartItem, ProductVariation
+
 class CartView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         user_profile = request.user.profile
-        cart, created = Cart.objects.create(user=user_profile, is_active=True)
+        cart, created = Cart.objects.get_or_create(user=user_profile, is_active=True)
         if not created and not cart.is_active:
             cart = Cart.objects.create(user=user_profile, is_active=True)
             cart.save()
-        product_variation_id = request.data.get('product_variation_id')
-        quantity = request.data.get('quantity', 1)
-        product_variation = ProductVariation.objects.get(id=product_variation_id)
-        cart_item, created = CartItem.objects.get_or_create(cart=cart,  productVariation=product_variation, quantity=quantity)
-        if not created:
-            cart_item.quantity += int(quantity)
+        
+        product_id = request.data.get('product_id')
+        quantity = int(request.data.get('quantity', 1))
+        
+        # Filter ProductVariation related to the given product_id and select the first one
+        product_variation = ProductVariation.objects.filter(product_id=product_id).first()
+        
+        if not product_variation:
+            return Response({'message': 'No product variation found for the given product ID'}, status=404)
+        
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, productVariation=product_variation)
+        if created:
+            cart_item.quantity = quantity
         else:
-            cart_item.quantity = int(quantity)
+            cart_item.quantity += quantity
         cart_item.save()
 
+        return Response({'message': 'Item added to cart', 'cart_item_id': cart_item.id})
+    
 class ReviewCartView(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
         user_profile = request.user.profile
-        cart = Cart.objects.get(user=user_profile, is_active=True)
+        cart = Cart.objects.filter(user=user_profile, is_active=True).first()
         if not cart:
             return Response({'message': 'No active cart found'}, status=404)
-        
+
         cart_items = CartItem.objects.filter(cart=cart)
         cart_serializer = CartSerializer(cart)
         cart_items_serializer = CartItemSerializer(cart_items, many=True)
@@ -85,19 +123,17 @@ class ReviewCartView(APIView):
         })
     
 
-    
-
             
+# create order from the cart items
         
-        
-        # create order from the cart items
-        
-
-
-class CartViewSet(mixins.ListModelMixin,mixins.CreateModelMixin,mixins.DestroyModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+class CartViewSet(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  mixins.DestroyModelMixin,
+                  mixins.UpdateModelMixin,
+                  viewsets.GenericViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
-
+    permission_classes = [IsAuthenticated]
 
 class CartItemViewSet(mixins.CreateModelMixin, 
                       mixins.UpdateModelMixin, 
