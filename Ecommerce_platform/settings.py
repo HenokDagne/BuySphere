@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
+import json
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -76,13 +77,16 @@ WSGI_APPLICATION = 'Ecommerce_platform.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+with open(os.path.join(BASE_DIR, 'config.json')) as config_file:
+    config = json.load(config_file)
+    
  
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'Ecommerce_platform',
         'USER': 'postgres',
-        'PASSWORD': '@Hd36As85',
+        'PASSWORD': config['DATABASE_PASSWORD'], 
         'HOST': 'localhost',  # or the IP address of your PostgreSQL server
         'PORT': '5432',
     }

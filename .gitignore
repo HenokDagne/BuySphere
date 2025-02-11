@@ -41,3 +41,7 @@ ENV/
 Thumbs.db
 ehthumbs.db
 .README.md
+# Configuration file
+config.json
+# Environment variables
+.env
