@@ -10,7 +10,9 @@ from .views import (
     ProductVariationListView,
     ProductVariationRetrieveUpdateDestroyView,
     CartViewSet,
-    CartItemViewSet
+    CartItemViewSet,
+    ReviewCartView,
+    CartView
 )
 
 # Create a router and register the viewsets
@@ -28,6 +30,8 @@ urlpatterns = [
     path('products/<int:pk>/', ProductListRetrieveUpdateView.as_view(), name='product-retrieve-update'),
     path('product-variations/', ProductVariationListView.as_view(), name='product-variation-list'),
     path('product-variations/<int:pk>/', ProductVariationRetrieveUpdateDestroyView.as_view(), name='product-variation-retrieve-update-destroy'),
+    path('create-cart/', CartView.as_view(), name='create-cart'),
+    path('review-cart/', ReviewCartView.as_view(), name='review-cart'),
 ]
 
 # Include the router URLs in the urlpatterns
