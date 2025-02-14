@@ -2,6 +2,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
+    productdetail,
     login_view,
     filterViewSet,
     CategoryViewSet,
@@ -34,6 +35,7 @@ urlpatterns = [
     path('product-variations/<int:pk>/', ProductVariationRetrieveUpdateDestroyView.as_view(), name='product-variation-retrieve-update-destroy'),
     path('create-cart/', CartView.as_view(), name='create-cart'),
     path('review-cart/', ReviewCartView.as_view(), name='review-cart'),
+    path('product/', productdetail, name='product-detail')
 ]
 
 # Include the router URLs in the urlpatterns

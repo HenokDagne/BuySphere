@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/view.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <title>AirPods Max</title>
+    
+    
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+          <li><img src="" alt=""></li>
+          <label for="category">
+              <select name="categories" id="category">
+                  <option value="category">category</option>
+                  <option value="phone"><a href="">phones</a></option>
+                  <option value="laptops"><a href="">laptops</a></option>
+                  <option value="shoes"><a href="">shoes</a></option>
+              </select>
+          </label>
+          <li><a href=""></a>Order</li>
+          <li><a href=""></a>shopping</li>
+          <input type="text" name="search" id="search" placeholder="search proucts">
+          <li class="cart"><a href="#"><i class="bi bi-cart" style="font-size: 1.5em;"></i> Cart</a></li>
+      </ul>
+  </nav>
+  </header>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="#">Electronics</a> / <a href="#">Audio</a> / <a href="#">Headphones</a> / <a href="#">Shop Headphones by type</a> / <span>AirPods Max</span>
+        </nav>
+        
+        <div class="product">
+            <div class="product-images">
+              {% load static %}
+                <img src="{% static 'images/headset.webp' %}"  alt="AirPods Max" class="main-image">
+                <div class="thumbnail-images">
+                    <img src="{% static 'images/headset.webp' %}" alt="Color Option">
+                    <img src="{% static 'images\headphone4.jpg' %}" alt="Color Option">
+                    <img src="{% static 'images\headphon2.jpg' %}" alt="Color Option">
+                    <img src="{% static 'images\headphoen (7).jpg'%}" alt="Color Option">
+                </div>
+            </div>
+            
+            <div class="product-details">
+                <h1>AirPods Max</h1>
+                <p class="description">A perfect balance of exhilarating high-fidelity audio and the effortless magic of AirPods.</p>
+                <p class="rating">★★★★★ (121)</p>
+                <p class="price">$549.00 or $99.99/month</p>
+                <p class="availability">Only <span class="highlight">12 Items</span> Left! Don’t miss it</p>
+                
+                <label>Choose a Color:</label>
+                <div class="color-options">
+                    <span class="color red"></span>
+                    <span class="color black"></span>
+                    <span class="color green"></span>
+                    <span class="color white"></span>
+                    <span class="color blue"></span>
+                </div>
+                
+                <div class="quantity">
+                    <button>-</button>
+                    <input type="text" value="1">
+                    <button>+</button>
+                </div>
+                
+                <div class="buttons">
+                    <button class="buy-now">Buy Now</button>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+                
+                <div class="delivery">
+                    <p>📦 <strong>Free Delivery</strong> - Enter your Postal code for Delivery Availability</p>
+                    <p>↩️ <strong>Return Delivery</strong> - Free 30-days Delivery Returns. <a href="#">Details</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

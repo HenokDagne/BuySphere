@@ -42,6 +42,24 @@ class filterViewSet(APIView):
         product = Product.objects.filter(category_id=pk)
         filtered_products = ProductSerializer(product, many=True, context={'request': request})
         return Response({'category': CategorySerializer(category, context={'request': request}).data, 'products': filtered_products.data})
+    
+
+
+class productdetail(APIView):
+    def get(self, request, pk=None, *args, **kwars):
+        try:
+            product_variations = ProductVariation.objects.all().filter(product=pk)
+        except ProductVariation.DoesNotExist:
+            return Response({'error': 'Product variations not found'}, status=404)
+        product_variations_serializer = ProductVariationSerializer(product_variations, many=True, context={'request': request})
+        product = Product.get_object_or_404(Product, id=pk)
+        product_serializer = ProductSerializer(product, context={'request': request})
+        return render(request, 'productdetail.html', 
+                      {
+                          'product' : product_serializer.date,
+                           'product_variations': product_variations_serializer.data 
+                      })
+        
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -141,3 +159,7 @@ class CartItemViewSet(mixins.CreateModelMixin,
                       viewsets.GenericViewSet):
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
+
+
+def productdetail(request):
+    return render(request, 'productdetail.html')
