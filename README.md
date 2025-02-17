@@ -1,2 +1,0 @@
-# BuySphere
-E-commerce platform
