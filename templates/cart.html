@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <title>Product List</title>
+    
+    <script>
+        function toggleDeleteIcon(event) {
+            let product = event.currentTarget;
+            product.classList.toggle('active');
+        }
+
+        function removeCartItem(event, cartItemId) {
+            event.preventDefault();
+            fetch("{% url 'remove_item' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ cart_item_id: cartItemId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Item removed from cart') {
+                    document.getElementById('message').innerText = data.message;
+                    document.getElementById(`cart-item-${cartItemId}`).remove();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><img src="" alt=""></li>
+            <label for="category">
+                <select name="categories" id="category">
+                    <option value="category">category</option>
+                    <option value="phone"><a href="">phones</a></option>
+                    <option value="laptops"><a href="">laptops</a></option>
+                    <option value="shoes"><a href="">shoes</a></option>
+                </select>
+            </label>
+            <li><a href=""></a>Order</li>
+            <li><a href=""></a>shopping</li>
+            <input type="text" name="search" id="search" placeholder="search products">
+            <li class="cart-icon"></li>
+            <li class="cart"><a href="#"><i class="bi bi-cart" style="font-size: 1.5em;"></i> Cart</a></li>
+        </ul>
+    </nav>
+    <div id="message"></div>
+    <div class="container">
+        {% for cart_item in cart_items %}
+        <div class="product" id="cart-item-{{ cart_item.id }}" onclick="toggleDeleteIcon(event)">
+            <img src="{{ cart_item.productVariation.image_url }}" alt="Wireless Earbuds">
+            <div class="product-info">
+                <h3>{{ cart_item.productVariation.product.name }}</h3>
+                <span class="stars">★★★★★ (121)</span>
+            </div>
+            <span class="price">{{ cart_item.productVariation.additional_price }}</span>
+            <form method="post" onsubmit="removeCartItem(event, {{ cart_item.id }})">
+                {% csrf_token %}
+                <input type="hidden" name="cart_item_id" value="{{ cart_item.id }}">
+                <button class="submit">Delete</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
