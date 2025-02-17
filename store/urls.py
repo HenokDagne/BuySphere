@@ -2,7 +2,8 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    productdetail,
+    review_cart,
+    ProductDetailView,
     login_view,
     filterViewSet,
     CategoryViewSet,
@@ -14,7 +15,8 @@ from .views import (
     CartViewSet,
     CartItemViewSet,
     ReviewCartView,
-    CartView
+    CartView, 
+    RemoveCartItemView
 )
 
 # Create a router and register the viewsets
@@ -35,7 +37,9 @@ urlpatterns = [
     path('product-variations/<int:pk>/', ProductVariationRetrieveUpdateDestroyView.as_view(), name='product-variation-retrieve-update-destroy'),
     path('create-cart/', CartView.as_view(), name='create-cart'),
     path('review-cart/', ReviewCartView.as_view(), name='review-cart'),
-    path('product/', productdetail, name='product-detail')
+    path('product/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
+    path('review-cart1/', review_cart, name='review-cart'),
+    path('remove-item/', RemoveCartItemView.as_view(), name='remove_item'),
 ]
 
 # Include the router URLs in the urlpatterns

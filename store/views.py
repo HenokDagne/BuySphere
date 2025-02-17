@@ -1,6 +1,6 @@
 from rest_framework import viewsets, mixins, generics
 from rest_framework.views import APIView 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Category, Product, ProductVariation, Cart, CartItem
 from .serializers import CategorySerializer, ProductSerializer, ProductVariationSerializer, CartSerializer, CartItemSerializer
 from rest_framework.decorators import action
@@ -45,20 +45,23 @@ class filterViewSet(APIView):
     
 
 
-class productdetail(APIView):
-    def get(self, request, pk=None, *args, **kwars):
+class ProductDetailView(APIView):
+    def get(self, request, pk=None, *args, **kwargs):
         try:
-            product_variations = ProductVariation.objects.all().filter(product=pk)
+            product = get_object_or_404(Product, id=pk)
+            product_variations = ProductVariation.objects.filter(product=product)
+        except Product.DoesNotExist:
+            return Response({'error': 'Product not found'}, status=404)
         except ProductVariation.DoesNotExist:
             return Response({'error': 'Product variations not found'}, status=404)
-        product_variations_serializer = ProductVariationSerializer(product_variations, many=True, context={'request': request})
-        product = Product.get_object_or_404(Product, id=pk)
+
         product_serializer = ProductSerializer(product, context={'request': request})
-        return render(request, 'productdetail.html', 
-                      {
-                          'product' : product_serializer.date,
-                           'product_variations': product_variations_serializer.data 
-                      })
+        product_variations_serializer = ProductVariationSerializer(product_variations, many=True, context={'request': request})
+
+        return render(request, 'productdetail.html', {
+            'product': product_serializer.data,
+            'product_variations': product_variations_serializer.data
+        })
         
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -85,15 +88,6 @@ class ProductVariationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAP
     queryset = ProductVariation.objects.all()
     serializer_class = ProductVariationSerializer
 
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import Cart, CartItem, ProductVariation
-
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import Cart, CartItem, ProductVariation
 
 class CartView(APIView):
     permission_classes = [IsAuthenticated]
@@ -122,6 +116,25 @@ class CartView(APIView):
         cart_item.save()
 
         return Response({'message': 'Item added to cart', 'cart_item_id': cart_item.id})
+
+
+class RemoveCartItemView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user_profile = request.user.profile
+        cart = Cart.objects.filter(user=user_profile, is_active=True).first()
+        if not cart:
+            return Response({'message': 'No active cart found'}, status=404)
+        
+        cart_item_id = request.data.get('cart_item_id')
+        cart_item = get_object_or_404(CartItem, id=cart_item_id, cart=cart)
+        cart_item.delete()
+
+        return Response({'message': 'Item removed from cart'})    
+
+
     
 class ReviewCartView(APIView):
     permission_classes = [IsAuthenticated]
@@ -131,17 +144,23 @@ class ReviewCartView(APIView):
         cart = Cart.objects.filter(user=user_profile, is_active=True).first()
         if not cart:
             return Response({'message': 'No active cart found'}, status=404)
+        
 
-        cart_items = CartItem.objects.filter(cart=cart)
-        cart_serializer = CartSerializer(cart)
-        cart_items_serializer = CartItemSerializer(cart_items, many=True)
-        return Response({
+        cart_items = CartItem.objects.filter(cart=cart).select_related('productVariation__product')
+        
+        cart_serializer = CartSerializer(cart, context={'request': request})
+        
+        cart_items_serializer = CartItemSerializer(cart_items, many=True, context={'request': request})
+        return render(request, 'cart.html', {
             'cart': cart_serializer.data,
             'cart_items': cart_items_serializer.data
         })
+   
+
     
 
-            
+def review_cart(request):
+    return render(request, 'cart.html')            
 # create order from the cart items
         
 class CartViewSet(mixins.ListModelMixin,

@@ -22,9 +22,18 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class ProductVariationSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = ProductVariation
-        fields = ['id', 'product', 'color', 'image', 'additional_price', 'stock']
+        fields = ['id', 'product', 'color', 'image', 'image_url', 'additional_price', 'stock']
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+       
 
         
 class CartSerializer(serializers.ModelSerializer):

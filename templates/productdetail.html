@@ -6,9 +6,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/view.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
-    <title>AirPods Max</title>
-    
-    
+    <title>{{ product.name }}</title>
 </head>
 <body>
   <header>
@@ -25,33 +23,31 @@
           </label>
           <li><a href=""></a>Order</li>
           <li><a href=""></a>shopping</li>
-          <input type="text" name="search" id="search" placeholder="search proucts">
+          <input type="text" name="search" id="search" placeholder="search products">
           <li class="cart"><a href="#"><i class="bi bi-cart" style="font-size: 1.5em;"></i> Cart</a></li>
       </ul>
   </nav>
   </header>
     <div class="container">
         <nav class="breadcrumb">
-            <a href="#">Electronics</a> / <a href="#">Audio</a> / <a href="#">Headphones</a> / <a href="#">Shop Headphones by type</a> / <span>AirPods Max</span>
+            <a href="#">Electronics</a> / <a href="#">Audio</a> / <a href="#">Headphones</a> / <a href="#">Shop Headphones by type</a> / <span>{{ product.name }}</span>
         </nav>
         
         <div class="product">
             <div class="product-images">
-              {% load static %}
-                <img src="{% static 'images/headset.webp' %}"  alt="AirPods Max" class="main-image">
+                <img id="main-image" src="{{ product.image_url }}" alt="{{ product.name }}" class="main-image">
                 <div class="thumbnail-images">
-                    <img src="{% static 'images/headset.webp' %}" alt="Color Option">
-                    <img src="{% static 'images\headphone4.jpg' %}" alt="Color Option">
-                    <img src="{% static 'images\headphon2.jpg' %}" alt="Color Option">
-                    <img src="{% static 'images\headphoen (7).jpg'%}" alt="Color Option">
+                    {% for product_variation in product_variations %}
+                        <img src="{{ product_variation.image_url }}" alt="Color Option" onclick="changeImage(this, {{ product_variation.additional_price }})">
+                    {% endfor %}
                 </div>
             </div>
             
             <div class="product-details">
-                <h1>AirPods Max</h1>
-                <p class="description">A perfect balance of exhilarating high-fidelity audio and the effortless magic of AirPods.</p>
+                <h1>{{ product.name }}</h1>
+                <p class="description">{{ product.description }}</p>
                 <p class="rating">★★★★★ (121)</p>
-                <p class="price">$549.00 or $99.99/month</p>
+                <p class="price" id="price">${{ product.price }}</p>
                 <p class="availability">Only <span class="highlight">12 Items</span> Left! Don’t miss it</p>
                 
                 <label>Choose a Color:</label>
@@ -71,7 +67,7 @@
                 
                 <div class="buttons">
                     <button class="buy-now">Buy Now</button>
-                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="add-to-cart"><i class="bi bi-cart"></i> Add to Cart</button>
                 </div>
                 
                 <div class="delivery">
@@ -81,5 +77,16 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function changeImage(element, additionalPrice) {
+            var mainImage = document.getElementById('main-image');
+            var priceElement = document.getElementById('price');
+            var basePrice = parseFloat("{{ product.price }}");
+
+            mainImage.src = element.src;
+            priceElement.textContent = "$" + (basePrice + additionalPrice).toFixed(2);
+        }
+    </script>
 </body>
 </html>
