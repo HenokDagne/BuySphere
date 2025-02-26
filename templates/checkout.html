@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+</head>
+<body>
+    <h1>Checkout</h1>
+    <h2>Cart</h2>
+    <p>Total Price: ${{ cart.total_price }}</p>
+    <h2>Items</h2>
+    <ul>
+        {% for item in cart_items %}
+        <li>{{ item.productVariation.product.name }} - {{ item.productVariation.color }} - Quantity: {{ item.quantity }} - Price: ${{ item.get_total }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
