@@ -36,26 +36,26 @@ class ProductVariationSerializer(serializers.ModelSerializer):
        
 
         
-class CartSerializer(serializers.ModelSerializer):
 
-    total_price = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = Cart
-        fields = ['id', 'user', 'total_price']
-
-    def get_total_price(self, obj):
-        total = sum(item.productVariation.additional_price * item.quantity for item in obj.items.all())
-        return total
 
 class CartItemSerializer(serializers.ModelSerializer):
     productVariation = ProductVariationSerializer()
-    cart = CartSerializer()
+   
 
     class Meta:
         model = CartItem
         fields = ['id','cart', 'productVariation', 'quantity']
 
 
+class CartSerializer(serializers.ModelSerializer):
+    items = CartItemSerializer(source='cartitem_set', many=True, read_only=True)
+    total_price = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Cart
+        fields = ['id', 'user','items', 'total_price']
 
+    def get_total_price(self, obj):
+        total = sum(item.productVariation.additional_price * item.quantity for item in obj.items.all())
+        return total
 

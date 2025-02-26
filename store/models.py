@@ -61,19 +61,7 @@ class Address(models.Model):
     def __str__(self):
         return f"{self.street}, {self.city}, {self.zip_code}, {self.country}"
 
-class Payment(models.Model):
-    PAYMENT_METHODS = [
-        ('paypal', 'PayPal'),
-        ('telebirr', 'Telebirr'),
-        ('mobile_bank', 'Mobile Banking'),
-    ]
-    customer = models.ForeignKey(CreateProfile, related_name='payment_methods', on_delete=models.CASCADE)    
-    method = models.CharField(max_length=25, choices=PAYMENT_METHODS, default='paypal')
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=[("pending", "Pending"), ("completed", "Completed"), ("failed", "Failed")], default="pending")
-    created_at = models.DateTimeField(auto_now_add=True)
-    def __str__(self):
-        return f"{self.customer.user.username} - {self.method} - {self.amount} - {self.status}" 
+
 
 class Cart(models.Model):
     user = models.OneToOneField(CreateProfile, related_name='cart', on_delete=models.CASCADE)
@@ -103,10 +91,19 @@ class CartItem(models.Model):
 
 
 class Order(models.Model):
+    
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Paid', 'Paid'),
+        ('Cancelled', 'Cancelled'),
+        ('Shipped', 'Shipped'),
+        ('Delivered', 'Delivered'),
+    ]
     customer = models.ForeignKey(CreateProfile, related_name='orders', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     address = models.ForeignKey(Address, related_name='orders', on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
     
 
     def __str__(self):
@@ -138,4 +135,20 @@ class ShippingAddress(models.Model):
 
     def __str__(self):
         return f'{self.street}, {self.city}, {self.zip_code}'
-    
+
+class Payment(models.Model):
+    PAYMENT_METHODS = [
+        ('Credit Card', 'Credit Card'),
+        ('PayPal', 'PayPal'),
+        ('Google Pay', 'Google Pay'),
+        ('COD', 'Cash on Delivery'),
+    ]
+    #order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment')  # One payment per order
+    transaction_id = models.CharField(max_length=255, blank=True, null=True) # From payment gateway
+    customer = models.ForeignKey(CreateProfile, related_name='payment_methods', on_delete=models.CASCADE)    
+    method = models.CharField(max_length=25, choices=PAYMENT_METHODS, default='paypal')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=[("pending", "Pending"), ("completed", "Completed"), ("failed", "Failed")], default="pending")
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.customer.user.username} - {self.method} - {self.amount} - {self.status}"     

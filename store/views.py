@@ -62,31 +62,9 @@ class ProductDetailView(APIView):
             'product': product_serializer.data,
             'product_variations': product_variations_serializer.data
         })
-        
-
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-       
     
-    
-  
 
-class ProductList(generics.ListAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
 
-class ProductListRetrieveUpdateView(generics.RetrieveUpdateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-class ProductVariationListView(generics.ListAPIView):
-    queryset = ProductVariation.objects.all()
-    serializer_class = ProductVariationSerializer
-
-class ProductVariationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ProductVariation.objects.all()
-    serializer_class = ProductVariationSerializer
 
 
 class CartView(APIView):
@@ -155,10 +133,74 @@ class ReviewCartView(APIView):
             'cart': cart_serializer.data,
             'cart_items': cart_items_serializer.data
         })
-   
+       
+        
+class CheckoutView(viewsets.ModelViewSet):
+    
+    permission_classes = [IsAuthenticated]
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+     # Add this line to specify the serializer class  
 
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated], url_path='checkout', url_name='checkout')
+    def checkout(self, request):
+       
+        user_profile = request.user.profile
+        cart = Cart.objects.filter(user=user_profile, is_active=True).first()
+        if not cart:
+            return Response({'message': 'No active cart found'}, status=404)
+        
+        cart_items = CartItem.objects.filter(cart=cart).select_related('cart')
+        if not cart_items:
+            return Response({'message': 'No items in the cart'}, status=404)
+
+        cart_serializer = CartSerializer(cart, context={'request': request})
+        cart_items_serializer = CartItemSerializer(cart_items, many=True, context={'request': request})
+
+        context = {
+            'cart': cart_serializer.data,
+            'cart_items': cart_items_serializer.data
+        }
+        return Response(context)
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated], url_path='payment', url_name='payment')
+    def payment(self, request):
+        pass
+    
     
 
+        
+    
+
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+       
+    
+    
+  
+
+class ProductList(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class ProductListRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class ProductVariationListView(generics.ListAPIView):
+    queryset = ProductVariation.objects.all()
+    serializer_class = ProductVariationSerializer
+
+class ProductVariationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ProductVariation.objects.all()
+    serializer_class = ProductVariationSerializer
+
+
+
+    
+# cancle this function after complete project
 def review_cart(request):
     return render(request, 'cart.html')            
 # create order from the cart items
@@ -178,6 +220,8 @@ class CartItemViewSet(mixins.CreateModelMixin,
                       viewsets.GenericViewSet):
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
+
+
 
 
 def productdetail(request):

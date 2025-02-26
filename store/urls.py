@@ -16,11 +16,15 @@ from .views import (
     CartItemViewSet,
     ReviewCartView,
     CartView, 
-    RemoveCartItemView
+    RemoveCartItemView,
+    CheckoutView,
+     
+ 
 )
 
 # Create a router and register the viewsets
 router = DefaultRouter()
+router.register(r'checkout', CheckoutView, basename='checkout')
 router.register(r'categories', CategoryViewSet)
 router.register(r'carts', CartViewSet)
 router.register(r'cart-items', CartItemViewSet)
