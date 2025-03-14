@@ -1,4 +1,3 @@
-
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
@@ -18,16 +17,15 @@ from .views import (
     CartView, 
     RemoveCartItemView,
     CheckoutView,
-     
- 
+    OrderView,
 )
 
 # Create a router and register the viewsets
 router = DefaultRouter()
-router.register(r'checkout', CheckoutView, basename='checkout')
 router.register(r'categories', CategoryViewSet)
 router.register(r'carts', CartViewSet)
 router.register(r'cart-items', CartItemViewSet)
+router.register(r'order', OrderView, basename='order')
 
 # Define the URL patterns for the generic views
 urlpatterns = [
@@ -44,6 +42,7 @@ urlpatterns = [
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('review-cart1/', review_cart, name='review-cart'),
     path('remove-item/', RemoveCartItemView.as_view(), name='remove_item'),
+    path('checkout/', CheckoutView.as_view(), name='checkout'),
 ]
 
 # Include the router URLs in the urlpatterns

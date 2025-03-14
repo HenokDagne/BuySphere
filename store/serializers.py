@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, ProductVariation, Cart, CartItem
+from .models import Category, Product, ProductVariation, Cart, CartItem, Order, OrderItem, ShippingAddress
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,14 +48,42 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(source='cartitem_set', many=True, read_only=True)
+    cartitems_detail = CartItemSerializer(source='items', many=True, read_only=True)
     total_price = serializers.SerializerMethodField()
     
     class Meta:
         model = Cart
-        fields = ['id', 'user','items', 'total_price']
+        fields = ['id', 'user','cartitems_detail', 'total_price']
 
     def get_total_price(self, obj):
-        total = sum(item.productVariation.additional_price * item.quantity for item in obj.items.all())
+        total = sum(item.productVariation.additional_price + item.productVariation.product.price * item.quantity for item in obj.items.all())
         return total
+    
+class OrderItemSerailizer(serializers.ModelSerializer):
+    productVariation = ProductVariationSerializer()
+    
+    class Meta:
+        model = OrderItem
+        fields = ['id','productVariation','quantity']
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    orders = OrderItemSerailizer(source='items', many=True, read_only=True)
+    class Meta:
+        model = Order  
+        fields = ['id', 'customer', 'orders', 'created_at', 'total_price', 'status' ]
+
+        def __str__(self):
+            return f"{self.customer.user.username} - {self.total_price} "
+
+class ShippingAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShippingAddress
+        fields = ['id', 'order', 'customer', 'street', 'city', 'zip_code', 'full_address']
+                
+
+
+
+
+
 
