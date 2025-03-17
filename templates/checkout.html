@@ -16,12 +16,11 @@
 
       <nav class="w-full md:w-auto">
         <ul class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-gray-700 font-medium">
-          <li><a href="" class="hover:text-blue-500">Home</a></li>
-          <li><a href="" class="hover:text-blue-500">Shop</a></li>
-          <li><a href="" class="hover:text-blue-500">Cart</a></li>
-          <li><a href="" class="hover:text-blue-500">Orders</a></li>
-          <li><a href="" class="hover:text-blue-500">Checkout</a></li>
-          <li><a href="" class="hover:text-blue-500">Contact</a></li>
+          <li><a href="{% url 'home' %}" class="hover:text-blue-500">Home</a></li>
+          <li><a href="{% url 'review-cart' %}" class="hover:text-blue-500">Cart</a></li>
+          <li><a href="#" class="hover:text-blue-500">Orders</a></li>
+          <li><a href="{% url 'checkout' %}" class="hover:text-blue-500">Checkout</a></li>
+          <li><a href="#" class="hover:text-blue-500">Contact</a></li>
         </ul>
       </nav>
 

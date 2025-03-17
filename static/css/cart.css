@@ -160,3 +160,7 @@ input[type="text"] {
         margin-bottom: 10px;
     }
 }
+
+#main-grid{
+box-shadow: None;
+}

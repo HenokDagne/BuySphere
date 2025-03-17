@@ -86,8 +86,9 @@ class CartView(APIView):
         if created:
             cart_item.quantity = quantity
         else:
-            cart_item.quantity += quantity
+            cart_item.quantity += quantity    
         cart_item.save()
+
 
         return Response({'message': 'Item added to cart', 'cart_item_id': cart_item.id})
 
@@ -155,9 +156,9 @@ class OrderView(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='create-order', url_name='create-order')
     def create_order(self, request, *args, **kwargs):
         user = request.user.profile
-        street = request.get("street")
-        city = request.get("city")
-        zip_code = request.get("zip_code")     
+        street = request.data.get("street")
+        city = request.data.get("city")
+        zip_code = request.data.get("zip_code")     
 
         if not user:
             return Response({'message': 'User not found'}, status=404)
@@ -184,7 +185,9 @@ class OrderView(viewsets.ModelViewSet):
         
         cart.is_active = False
         cart.save()
+        cart.delete()
         return Response({'message': 'Order created successfully'})
+    
 
        
 
@@ -196,9 +199,31 @@ class OrderView(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.delete()
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'category.html'
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serilalizer = self.get_serializer(queryset,many=True)
+
+        return Response({'categories': serilalizer.data}, template_name='category.html')
+    
+    
+    
+        
+
+
+    
+    
+
+
+
+
+
 
 class ProductList(generics.ListAPIView):
     queryset = Product.objects.all()
@@ -216,8 +241,7 @@ class ProductVariationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAP
     queryset = ProductVariation.objects.all()
     serializer_class = ProductVariationSerializer
 
-def review_cart(request):
-    return render(request, 'cart.html')
+
 
 class CartViewSet(mixins.ListModelMixin,
                   mixins.CreateModelMixin,

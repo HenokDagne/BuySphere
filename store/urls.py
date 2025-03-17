@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    review_cart,
+    
     ProductDetailView,
     login_view,
     filterViewSet,
@@ -40,7 +40,7 @@ urlpatterns = [
     path('create-cart/', CartView.as_view(), name='create-cart'),
     path('review-cart/', ReviewCartView.as_view(), name='review-cart'),
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
-    path('review-cart1/', review_cart, name='review-cart'),
+    
     path('remove-item/', RemoveCartItemView.as_view(), name='remove_item'),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
 ]

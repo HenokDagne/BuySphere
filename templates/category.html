@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Ecommerce Platform{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4">
+    <h2 class="text-2xl font-bold mb-6">Popular Categories</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full h-[700px] overflow-y-auto" style="border-radius: 0; box-shadow: none;">
+      {% for category in categories %}
+      <div class="flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow-sm w-full">
+        <img src="{{ category.image_url }}" alt="{{ category.name }}" class="w-full max-w-[400px] h-auto max-h-[300px] object-cover" />
+        <div class="flex-1">
+          <h3 class="text-lg font-semibold">{{ category.name }}</h3>
+          <p class="text-gray-500 text-sm">{{ category.product_set.count }} Items Available</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+</div>
+{% endblock %}
