@@ -15,6 +15,7 @@
   <img src="https://img.shields.io/badge/REST%20Framework-3.14%2B-orange.svg" alt="DRF">
   <img src="https://img.shields.io/badge/allauth-0.60%2B-9cf.svg" alt="django-allauth">
   <img src="https://img.shields.io/badge/psycopg2--binary-latest-blueviolet.svg" alt="psycopg2-binary">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3.x-38bdf8?logo=tailwindcss&logoColor=white" alt="Tailwind CSS">
 </p>
 
 ## Requirements
@@ -24,6 +25,7 @@
 - djangorestframework
 - django-allauth (with Google & GitHub providers)
 - psycopg2-binary (for PostgreSQL)
+- Tailwind CSS (for UI)
 
 Add these to your `requirements.txt`:
 
