@@ -15,7 +15,9 @@ __pycache__/
 __pycache__/
 db.sqlite3
 media/
-staticfiles/images/
+staticfiles/images/*
+# But do NOT ignore logo.png
+!static/images/logo.png
 Ecommerce_platform/settings.py  # Add settings.py in Ecommerce_platform folder to .gitignore
 store/migrations/  # Add migrations folder in store app to .gitignore
 # Environment variables
