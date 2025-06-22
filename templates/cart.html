@@ -1,14 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <title>Product List</title>
-    
+    {% load static %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <script>
         function toggleDeleteIcon(event) {
             let product = event.currentTarget;
@@ -38,39 +36,45 @@
         }
     </script>
 </head>
-<body>
-    <nav>
-        <ul>
-            <li><img src="" alt=""></li>
-            <label for="category">
-                <select name="categories" id="category">
-                    <option value="category">category</option>
-                    <option value="phone"><a href="">phones</a></option>
-                    <option value="laptops"><a href="">laptops</a></option>
-                    <option value="shoes"><a href="">shoes</a></option>
-                </select>
-            </label>
-            <li><a href=""></a>Order</li>
-            <li><a href=""></a>shopping</li>
-            <input type="text" name="search" id="search" placeholder="search products">
-            <li class="cart-icon"></li>
-            <li class="cart"><a href="#"><i class="bi bi-cart" style="font-size: 1.5em;"></i> Cart</a></li>
+<body class="bg-gray-100 font-sans">
+    <!-- Navbar -->
+    <nav class="bg-white shadow px-2 sm:px-6 py-4">
+        <ul class="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-0">
+            <li><img src="{% static 'images/logo.png' %}" alt="Logo" class="w-8 h-8 mr-2"></li>
+            <li><a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600">Home</a></li>
+            <li><a href="/categories/" class="text-gray-700 hover:text-blue-600">Category</a></li>
+            <li><a href="{% url 'checkout' %}" class="text-gray-700 hover:text-blue-600">Checkout</a></li>
+            <li><a href="{% url 'order-list' %}" class="text-gray-700 hover:text-blue-600">Order</a></li>
+            <li><a href="#" class="text-gray-700 hover:text-blue-600">Shopping</a></li>
+            <li class="w-full md:w-auto"><input type="text" name="search" id="search" placeholder="Search products"
+                class="px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300 w-full md:w-auto"></li>
+            <li class="cart w-full md:w-auto">
+                <a href="#" class="flex items-center text-black">
+                    <i class="bi bi-cart text-xl mr-1"></i> Cart
+                </a>
+            </li>
         </ul>
     </nav>
-    <div id="message"></div>
-    <div class="container">
+
+    <div id="message" class="text-center text-green-600 my-4"></div>
+
+    <!-- Product List -->
+    <div class="max-w-4xl mx-auto bg-white p-4 sm:p-6 mt-6 rounded shadow">
         {% for cart_item in cart_items %}
-        <div class="product" id="cart-item-{{ cart_item.id }}" onclick="toggleDeleteIcon(event)">
-            <img src="{{ cart_item.productVariation.image_url }}" alt="Wireless Earbuds">
-            <div class="product-info">
-                <h3>{{ cart_item.productVariation.product.name }}</h3>
-                <span class="stars">★★★★★ (121)</span>
+        <div id="cart-item-{{ cart_item.id }}" class="flex flex-col sm:flex-row items-center justify-between p-4 border-b cursor-pointer hover:bg-gray-50 transition"
+             onclick="toggleDeleteIcon(event)">
+            <div class="flex items-center gap-4 w-full sm:w-auto">
+                <img src="{{ cart_item.productVariation.image_url }}" alt="Product Image" class="w-16 h-16 object-cover rounded">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">{{ cart_item.productVariation.product.name }}</h3>
+                    <span class="text-green-500 text-sm">★★★★★ (121)</span>
+                </div>
             </div>
-            <span class="price">{{ cart_item.productVariation.additional_price }}</span>
-            <form method="post" onsubmit="removeCartItem(event, {{ cart_item.id }})">
+            <span class="text-lg font-bold text-gray-700 mt-2 sm:mt-0">{{ cart_item.productVariation.additional_price }}</span>
+            <form method="post" onsubmit="removeCartItem(event, {{ cart_item.id }})" class="mt-2 sm:mt-0 w-full sm:w-auto flex justify-end">
                 {% csrf_token %}
                 <input type="hidden" name="cart_item_id" value="{{ cart_item.id }}">
-                <button class="submit">Delete</button>
+                <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition w-full sm:w-auto">Delete</button>
             </form>
         </div>
         {% endfor %}
