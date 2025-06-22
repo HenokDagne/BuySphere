@@ -3,77 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/view.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <title>{{ product.name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}
 </head>
-<body>
-  <header>
-    <nav>
-      <ul>
-          <li><img src="" alt=""></li>
-          <label for="category">
-              <select name="categories" id="category">
-                  <option value="category">category</option>
-                  <option value="phone"><a href="">phones</a></option>
-                  <option value="laptops"><a href="">laptops</a></option>
-                  <option value="shoes"><a href="">shoes</a></option>
-              </select>
-          </label>
-          <li><a href=""></a>Order</li>
-          <li><a href=""></a>shopping</li>
-          <input type="text" name="search" id="search" placeholder="search products">
-          <li class="cart"><a href="#"><i class="bi bi-cart" style="font-size: 1.5em;"></i> Cart</a></li>
-      </ul>
-  </nav>
-  </header>
-    <div class="container">
-        <nav class="breadcrumb">
-            <a href="#">Electronics</a> / <a href="#">Audio</a> / <a href="#">Headphones</a> / <a href="#">Shop Headphones by type</a> / <span>{{ product.name }}</span>
-        </nav>
-        
-        <div class="product">
-            <div class="product-images">
-                <img id="main-image" src="{{ product.image_url }}" alt="{{ product.name }}" class="main-image">
-                <div class="thumbnail-images">
-                    {% for product_variation in product_variations %}
-                        <img src="{{ product_variation.image_url }}" alt="Color Option" onclick="changeImage(this, {{ product_variation.additional_price }})">
-                    {% endfor %}
-                </div>
+<body class="bg-white text-gray-800">
+    <!-- Header -->
+    <header class="border-b shadow-sm sticky top-0 bg-white z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center p-4 gap-4">
+            <div class="text-xl font-bold text-green-600 flex items-center">
+                <img src="{% static 'img/logo.png' %}" alt="Shopcart Logo" class="h-8 w-8 mr-2"> Shopcart
             </div>
-            
-            <div class="product-details">
-                <h1>{{ product.name }}</h1>
-                <p class="description">{{ product.description }}</p>
-                <p class="rating">★★★★★ (121)</p>
-                <p class="price" id="price">${{ product.price }}</p>
-                <p class="availability">Only <span class="highlight">12 Items</span> Left! Don’t miss it</p>
-                
-                <label>Choose a Color:</label>
-                <div class="color-options">
-                    <span class="color red"></span>
-                    <span class="color black"></span>
-                    <span class="color green"></span>
-                    <span class="color white"></span>
-                    <span class="color blue"></span>
-                </div>
-                
-                <div class="quantity">
-                    <button>-</button>
-                    <input type="text" value="1">
-                    <button>+</button>
-                </div>
-                
-                <div class="buttons">
-                    <button class="buy-now">Buy Now</button>
-                    <button class="add-to-cart"><i class="bi bi-cart"></i> Add to Cart</button>
-                </div>
-                
-                <div class="delivery">
-                    <p>📦 <strong>Free Delivery</strong> - Enter your Postal code for Delivery Availability</p>
-                    <p>↩️ <strong>Return Delivery</strong> - Free 30-days Delivery Returns. <a href="#">Details</a></p>
-                </div>
+            <nav class="flex flex-wrap gap-2 md:gap-4 text-sm justify-center">
+                <a href="{% url 'home'%}" class="hover:text-green-600">Home</a>
+                <a href="/categories/" class="hover:text-green-600">Category</a>
+                <a href="{% url 'checkout' %}" class="hover:text-green-600">Checkout</a>
+                <a href="#" class="hover:text-green-600">What’s New</a>
+                <a href="#" class="hover:text-green-600">Delivery</a>
+            </nav>
+            <div class="flex items-center gap-2 md:gap-4 w-full md:w-auto justify-center md:justify-end">
+                <input type="text" placeholder="Search Product" class="border rounded px-2 py-1 w-full md:w-auto">
+                <a href=" " class="flex items-center gap-1 hover:text-green-600"><i class="bi bi-person"></i> Account</a>
+                <a href="{% url 'review-cart' %}" class="flex items-center gap-1 hover:text-green-600"><i class="bi bi-cart text-xl"></i> Cart</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="container mx-auto text-xs sm:text-sm text-gray-500 p-4">
+        Electronics / Audio / Headphones / Shop Headphones by type / <span class="text-black">{{ product.name }}</span>
+    </div>
+
+    <!-- Product Section -->
+    <div class="container mx-auto p-2 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="flex flex-col items-center">
+            <img id="main-image" src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full max-w-xs sm:max-w-md md:max-w-lg h-auto object-cover rounded-xl">
+            <div class="flex gap-2 mt-4 flex-wrap justify-center">
+                {% for product_variation in product_variations %}
+                    <img src="{{ product_variation.image_url }}" alt="Color Option" onclick="changeImage(this, {{ product_variation.additional_price }})" class="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg cursor-pointer border">
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="flex flex-col justify-center">
+            <h1 class="text-xl sm:text-2xl font-semibold">{{ product.name }}</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mt-1">a perfect balance of exhilarating high-fidelity audio and the effortless magic of AirPods.</p>
+            <p class="text-green-600 text-xs sm:text-sm mt-2 font-medium">★★★★★ (121)</p>
+            <p id="price" class="text-lg sm:text-xl font-bold mt-4">${{ product.price }}</p>
+            <p class="text-xs sm:text-sm mt-2 text-orange-600">Only <span class="font-bold">12 Items</span> Left! Don’t miss it</p>
+
+            <label class="block mt-4 text-xs sm:text-sm font-medium">Choose a Color:</label>
+            <div class="flex gap-2 mt-2">
+                <span class="w-6 h-6 rounded-full border border-gray-300 bg-red-500"></span>
+                <span class="w-6 h-6 rounded-full border border-gray-300 bg-black"></span>
+                <span class="w-6 h-6 rounded-full border border-gray-300 bg-green-300"></span>
+                <span class="w-6 h-6 rounded-full border border-gray-300 bg-white"></span>
+                <span class="w-6 h-6 rounded-full border border-gray-300 bg-blue-500"></span>
+            </div>
+
+            <div class="flex items-center gap-2 mt-4">
+                <button class="border px-2 py-1 rounded">-</button>
+                <input type="text" value="1" class="w-12 text-center border rounded">
+                <button class="border px-2 py-1 rounded">+</button>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                <button class="bg-green-600 text-white px-6 py-2 rounded-xl font-semibold hover:bg-green-700">Buy Now</button>
+                <button class="border px-6 py-2 rounded-xl font-semibold flex items-center gap-2 hover:bg-gray-100">
+                    <i class="bi bi-cart"></i> Add to Cart
+                </button>
+            </div>
+
+            <div class="mt-6 text-xs sm:text-sm">
+                <p>📦 <strong>Free Delivery</strong> - Enter your Postal code for Delivery Availability</p>
+                <p>↩️ <strong>Return Delivery</strong> - Free 30-days Delivery Returns. <a href="#" class="text-green-600 underline">Details</a></p>
             </div>
         </div>
     </div>

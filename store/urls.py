@@ -18,6 +18,8 @@ from .views import (
     RemoveCartItemView,
     CheckoutView,
     OrderView,
+    register_view,
+    logout_view
 )
 
 # Create a router and register the viewsets
@@ -29,10 +31,12 @@ router.register(r'order', OrderView, basename='order')
 
 # Define the URL patterns for the generic views
 urlpatterns = [
+    path('', include(router.urls)),
+    path('logout/',logout_view, name='logout'),
+    path('register/', register_view, name='register'),
     path('login/', login_view, name='login'),
     path('home/', HomeAPIView.as_view(), name='home'),
     path('filter/<int:pk>/', filterViewSet.as_view(), name='filter'),
-    path('', include(router.urls)),
     path('products/', ProductList.as_view(), name='product-list'),
     path('products/<int:pk>/', ProductListRetrieveUpdateView.as_view(), name='product-retrieve-update'),
     path('product-variations/', ProductVariationListView.as_view(), name='product-variation-list'),

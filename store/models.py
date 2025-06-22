@@ -50,7 +50,7 @@ class CreateProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    phone = models.CharField(max_length=15)  
+    phone = models.CharField(max_length=15, null=True)  
 class Address(models.Model):
     customer = models.ForeignKey(CreateProfile, related_name='addresses', on_delete=models.CASCADE) 
     street = models.CharField(max_length=250)

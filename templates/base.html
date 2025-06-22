@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Ecommerce Platform{% endblock %}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="{% static 'js/main.js' %}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
 </head>
 <body class="bg-white font-sans">
-   
-    
-    <nav class="bg-white flex justify-between items-center px-10 py-4 shadow">
-        <img src="" alt="Logo" class="w-10 h-10">
-        <ul class="flex space-x-6">
-            <li><a href="#" class="text-gray-700">Category</a></li>
-            <li><a href="{% url 'order-list' %}" class="text-gray-700">Order</a></li>
-            <li><a href="#" class="text-gray-700">Shopping</a></li>
-        </ul>
-        <input type="text" placeholder="Search products" class="border px-4 py-2 rounded">
-        <a href="{% url 'review-cart' %}" class="text-gray-700 flex items-center">
-            <i class="bi bi-cart text-xl mr-2"></i>Cart
-        </a>
+    <nav class="bg-white shadow px-4 sm:px-6 lg:px-10 py-4">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center justify-center">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-14 h-14 rounded-full shadow-lg border-2 border-green-600">
+                <span class="text-lg font-bold text-green-700 hidden sm:inline">AksumNexus</span>
+            </div>
+            <ul class="flex flex-col md:flex-row gap-2 md:gap-6 items-center justify-center">
+                <li><a href="{% url 'home'%}" class="hover:text-green-600">Home</a></li>
+                <li><a href="/categories/" class="hover:text-green-700">Category</a></li>
+                <li><a href="{% url 'order-list' %}" class="hover:text-green-700">Order</a></li>
+                <li><a href="{% url 'checkout' %}" class="hover:text-green-700">Checkout</a></li>
+                <li><a href="#" class="text-gray-700">Shopping</a></li>
+            </ul>
+            <div class="flex flex-col sm:flex-row gap-2 items-center justify-center mt-2 md:mt-0">
+                <input type="text" placeholder="Search products" class="border px-4 py-2 rounded w-full sm:w-auto">
+                <a href="{% url 'review-cart' %}" class="text-gray-700 flex items-center mt-2 sm:mt-0">
+                    <i class="bi bi-cart text-xl mr-2"></i>Cart
+                </a>
+            </div>
+        </div>
     </nav>
-    
-    <main class="container mx-auto mt-6 px-6 h-screen">
+    <main class="container mx-auto mt-6 px-2 sm:px-6 h-auto min-h-[60vh]">
         {% block content %}
         {% endblock %}
     </main>

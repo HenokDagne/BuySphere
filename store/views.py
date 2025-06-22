@@ -3,30 +3,74 @@ from paystackapi.transaction import Transaction
 from rest_framework import viewsets, mixins, generics
 from rest_framework.views import APIView
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Category, Product, ProductVariation, Cart, CartItem, Order, OrderItem, ShippingAddress
+from .models import Category, Product, ProductVariation, Cart, CartItem, Order, OrderItem, ShippingAddress, CreateProfile
 from .serializers import CategorySerializer, ProductSerializer, ProductVariationSerializer, CartSerializer, CartItemSerializer, OrderSerializer
 from rest_framework.decorators import action
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.renderers import TemplateHTMLRenderer
+from django.contrib import messages
+
 
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if username and password:
+            user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
                 return redirect('home')
-    else:
-        form = AuthenticationForm()
+            else:
+                messages.error(request, 'Invalid username or password')            
+        else:
+            messages.error(request, 'Both username and password are required')
 
-    return render(request, 'login.html', {'form': form})
+
+
+    # Render the login page if the request method is Get or if authentication falis
+    return render(request, 'login.html', {})   
+
+def register_view(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')  # Fixed typo: `post` to `POST`
+
+        # Check if the user already exists
+        if User.objects.filter(email=email).exists() or User.objects.filter(username=username):
+            messages.error(request, 'User with this email already exists')
+        else:
+            # Create a new user
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name
+            )
+            user.save()
+            profile = CreateProfile.objects.create(user=user, first_name=first_name, last_name=last_name)
+            profile.save()
+            messages.success(request, "You have successfully registered")
+            return redirect('login')  # Redirect to the login page after successful registration
+
+    return render(request, 'signup.html', {})
+def logout_view(request):
+    if request.user.is_authenticated:
+        username = request.user.username
+        logout(request)
+        messages.success(request, f'{username} has logged out successfully. ')
+    else:
+        messages.error(request, 'you are not logged in. ')
+
+    return redirect('login')    
+    
 
 class HomeAPIView(APIView):
     def get(self, request, *args, **kwargs):
